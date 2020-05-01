@@ -1,12 +1,4 @@
 /*usuario mongodb 
-username: rogerioborba
-senha: HHughsBMLTfstc4I
-
-Atlas admin
-username: rogerioborba17
-senha: Mvrwrh4rHClLlFEA
-Nodejs
-mongodb+srv://<username>:<password>@cluster0-gaqph.mongodb.net/test?retryWrites=true&w=majority
 
 */
 

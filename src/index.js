@@ -8,9 +8,11 @@ app.use(express.json())
 // })
 const tipoGastoRouter = require('./routers/tipogasto')
 const usuarioRouter = require('./routers/usuario')
+const gastoRouter = require('./routers/gasto')
 app.use(tipoGastoRouter)
 app.use(usuarioRouter)
-app.all('*', (req, res) => {
+app.use(gastoRouter)
+app.all('*', async (req, res) => {
     //console.log(req)
     res.status(404).send('Recurso não encontrado')
 })

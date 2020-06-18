@@ -28,11 +28,16 @@ usuarioSchema.statics.findByCredentials = async(email, password) => {
         throw new Error("Usuário incorreto ou senha errada.")
     return user
 }
+usuarioSchema.virtual('gastos', {
+    ref: 'Gasto',
+    localField: '_id',
+    foreignField: 'usuario'
+})
 usuarioSchema.pre('save', async function(next){
     const user = this
     if (user.isModified('password')) 
         user.password = await bcrypt.hash(user.password, 8)
     next()
 })
-const Usuario = mongoose.model('usuario', usuarioSchema)
+const Usuario = mongoose.model('Usuario', usuarioSchema)
 module.exports = Usuario

@@ -10,14 +10,13 @@ router.get('/usuarios/me', auth, async (req, res)=> {
     res.send(req.usuario)
 })
 router.get('/usuarios/me/gastos', auth, async (req, res)=> {
-    
-    res.send(await req.usuario.gastos)
+     //await req.usuario.populate('gastos')
+     
+     res.send( await req.usuario.meusGastos())
 })
 router.post('/usuarios/login', async (req, res) => {
     try {
         //const u = await Usuario.findOne({email: req.body.email})
-        const u = await Usuario.findById({_id: "5ecd7e679f051802d88df12d"})
-        console.log(u)
         const user = await Usuario.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
         res.status(201).send({token})

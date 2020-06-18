@@ -1,11 +1,13 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const Gasto = require('./gasto')
 const usuarioSchema = new mongoose.Schema({
     nome: {type: String, required: true, trim: true},
     email: {type: String, required: true, trim: true, unique: true},
     password: {type: String, required: true, trim: true, minlength: 6},
-    isAdmin: {type: Boolean, default: false}
+    isAdmin: {type: Boolean, default: false},
+    gastos: [{type: mongoose.SchemaTypes.ObjectId, ref: 'Gasto', locaField: '_id', forignField: 'usuario'}]
 }, {collection: 'usuario'})
 usuarioSchema.methods.generateAuthToken = async function() {
     const user = this
@@ -28,11 +30,17 @@ usuarioSchema.statics.findByCredentials = async(email, password) => {
         throw new Error("Usuário incorreto ou senha errada.")
     return user
 }
-usuarioSchema.virtual('gastos', {
-    ref: 'Gasto',
-    localField: '_id',
-    foreignField: 'usuario'
-})
+// usuarioSchema.virtual('listaDeGastos', {
+//     ref: 'Gasto',
+//     localField: '_id',
+//     foreignField: 'usuario',
+//     justOne: false,
+// })
+usuarioSchema.methods.meusGastos = async function() {
+    const usuario = this
+    const gtos = await Gasto.find({usuario: usuario._id})
+    return gtos
+} 
 usuarioSchema.pre('save', async function(next){
     const user = this
     if (user.isModified('password')) 

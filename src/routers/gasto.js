@@ -9,11 +9,12 @@ router.post('/gastos/repeticao', auth, async (req, res) => {
         if (!req.body.qtd)
             return res.status(400).send("Não foi informado o número de repetição qtd.")
         const qtd = Number(objRequested.qtd)
-        dt = new Date(objRequested.data)
+        
         const arr = []        
-        for ( let i = 1;i <= qtd; i++){
+        for ( let i = 0;i < qtd; i++)  {
             gasto = new Gasto()
-            dt.setMonth(dt.getMonth() + i)    
+            let dt = new Date(objRequested.data)
+            dt.setMonth(dt.getMonth() + i)  
             gasto.data = dt
             gasto.valor = objRequested.valor
             gasto.descricao = objRequested.descricao

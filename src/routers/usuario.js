@@ -14,6 +14,10 @@ router.get('/usuarios/me/gastos', auth, async (req, res)=> {
      
      res.send( await req.usuario.meusGastos())
 })
+router.get('/usuarios/me/gastos-do-grupo', auth, async (req, res)=> {
+    //await req.usuario.populate('gastos')
+    res.send(await req.usuario.gastosDoGrupo())
+})
 router.post('/usuarios/login', async (req, res) => {
     try {
         //const u = await Usuario.findOne({email: req.body.email})
@@ -28,7 +32,7 @@ router.post('/usuarios/login', async (req, res) => {
 router.post('/usuarios', async (req, res) => {
     try {
         const attributesFromReq = Object.keys(req.body)
-        const isAttributesOk = attributesFromReq.every(att => ['nome', 'email', 'password'].includes(att))
+        const isAttributesOk = attributesFromReq.every(att => ['nome', 'email', 'password', 'grupoUsuarioGasto'].includes(att))
         if (!isAttributesOk)
             return res.status(400).send("Há atributos incorretos")
         const usuario = Usuario(req.body)
@@ -55,7 +59,7 @@ router.post('usuarios/login', async (req, res) => {
 router.patch('/usuarios/me',auth , async (req, res) => {
     try {
         let attributeNamesFromReq = Object.keys(req.body)
-        attributeNamesFromReq = attributeNamesFromReq.filter(att => ['nome', 'email'].includes(att))
+        attributeNamesFromReq = attributeNamesFromReq.filter(att => ['nome', 'email', 'grupoUsuarioGasto'].includes(att))
         if (attributeNamesFromReq.length == 0)
             return res.status(400).send("Há atributos incorretos")
         const usuario = req.usuario
@@ -79,15 +83,14 @@ router.patch('/usuarios/me/change-password', auth, async (req, res)=> {
         res.status(500).send(error.message)
     }
 })
-router.delete('/usuarios/:id', async (req, res) => {
+router.delete('/usuarios/me', auth, async (req, res) => {
     try {
-        const usuario = await Usuario.findByIdAndDelete({_id: req.params.id})
-        if (!usuario)
-            return res.status(404).send("Usuário não encotrado.")
-        return res.send(usuario)
+        await req.usuario.remove()
+        return res.send("Usuário removido")
     } catch (error) {
         console.log(error)
         res.status(500).send(`Não foi possível executar a operação. ${error.message}`)
     }
 })
+
 module.exports = router
